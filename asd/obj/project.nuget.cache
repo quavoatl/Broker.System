@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "GMESMyqN70y3Hglebx9xaMgW95g0w9WIyQpuhGZYTvurB6YA5S7EKWwaGPEfS48FniDmn9mvacRhreMUtpdthg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\seantal\\source\\repos\\Broker.System\\asd\\asd.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\seantal\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\3.1.12\\microsoft.netcore.app.host.win-x64.3.1.12.nupkg.sha512"
+  ],
+  "logs": []
+}
