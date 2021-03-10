@@ -57,5 +57,21 @@ namespace Broker.System.Controllers.V1
 
             return Ok(limit);
         }
+        
+        [HttpPut(ApiRoutes.Limit.Update)]
+        public IActionResult Update([FromRoute] int limitId, [FromBody] UpdateLimitRequest updateLimitRequest)
+        {
+            var newLimit = new Limit()
+            {
+                LimitId = limitId,
+                BrokerId = updateLimitRequest.BrokerId,
+                Value = updateLimitRequest.Value,
+                CoverType = updateLimitRequest.CoverType
+            };
+
+            var updated = _limitService.UpdateLimit(newLimit);
+            if(updated) return Ok(newLimit);
+            return NotFound();
+        }
     }
 }

@@ -10,6 +10,7 @@
         {
             public const string GetAll = Base + "/limits/{brokerId}";
             public const string Get = Base + "/limit/{limitId}";
+            public const string Update = Base + "/limit/{limitId}";
             public const string Create = Base + "/limit";
         }
         
