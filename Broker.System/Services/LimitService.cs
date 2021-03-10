@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Broker.System.Data;
 using Broker.System.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using NotImplementedException = System.NotImplementedException;
 
 namespace Broker.System.Services
 {
@@ -18,10 +18,15 @@ namespace Broker.System.Services
             _brokerDbContext = brokerDbContext;
         }
 
-        public async Task<List<Limit>> GetLimitsAsync(int brokerId)
+        public async Task<List<Limit>> GetLimitsAsync(Guid brokerId)
         {
             return await EntityFrameworkQueryableExtensions.ToListAsync(
                 _brokerDbContext.Limits.Where(l => l.BrokerId.Equals(brokerId)));
+        }
+
+        public async Task<List<Limit>> GetLimitsAsync()
+        {
+            return await EntityFrameworkQueryableExtensions.ToListAsync(_brokerDbContext.Limits);
         }
 
         public async Task<Limit> GetByIdAsync(int limitId)
@@ -42,9 +47,13 @@ namespace Broker.System.Services
         {
             var limitFromList = await GetByIdAsync(limitId);
 
-            _brokerDbContext.Limits.Remove(limitFromList);
-            var deleted = await _brokerDbContext.SaveChangesAsync();
-            return deleted > 0;
+            if (limitFromList != null)
+            {
+                _brokerDbContext.Limits.Remove(limitFromList);
+                var deleted = await _brokerDbContext.SaveChangesAsync();
+                return deleted > 0;
+            }
+            return false;
         }
 
         public async Task<EntityEntry<Limit>> CreateLimitAsync(Limit limit)

@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "p3GhVvzhzp0qJTw+j4b16ifraKENpD+ToL99///5/moUG+NizlNVXDZl2b3aL/+wa7sLO1nR3ly/+9WlWiW2HQ==",
+  "dgSpecHash": "MZtKuwNtp5p+TQ1N0wZ1H39lcClwYmU9aTiu3qrNRRKXDvlnKimbrDz1mtp7cgdFrmzeLdA8ZLRUYPa8EOW5eg==",
   "success": true,
   "projectFilePath": "C:\\Users\\seantal\\source\\repos\\Broker.System\\Broker.System\\Broker.System.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\seantal\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
+    "C:\\Users\\seantal\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\3.1.13\\microsoft.aspnetcore.authentication.jwtbearer.3.1.13.nupkg.sha512",
     "C:\\Users\\seantal\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\5.0.4\\microsoft.aspnetcore.cryptography.internal.5.0.4.nupkg.sha512",
     "C:\\Users\\seantal\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\5.0.4\\microsoft.aspnetcore.cryptography.keyderivation.5.0.4.nupkg.sha512",
     "C:\\Users\\seantal\\.nuget\\packages\\microsoft.aspnetcore.identity.entityframeworkcore\\5.0.4\\microsoft.aspnetcore.identity.entityframeworkcore.5.0.4.nupkg.sha512",

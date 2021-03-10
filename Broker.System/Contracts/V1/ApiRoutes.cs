@@ -8,7 +8,8 @@
 
         public static class Limit
         {
-            public const string GetAll = Base + "/limits/{brokerId}";
+            public const string GetAllByBroker = Base + "/limits/{brokerId}";
+            public const string GetAll = Base + "/limits";
             public const string Get = Base + "/limit/{limitId}";
             public const string Update = Base + "/limit/{limitId}";
             public const string Create = Base + "/limit";

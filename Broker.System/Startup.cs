@@ -42,6 +42,13 @@ namespace Broker.System
                 app.UseHsts();
             }
 
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+
+            // app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             var swaggerOptions = new SwaggerOptions();
             Configuration.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);
 
@@ -51,15 +58,9 @@ namespace Broker.System
             {
                 option.SwaggerEndpoint(swaggerOptions.UIEndpoint, swaggerOptions.Description);
             });
-
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
-
-            app.UseRouting();
-
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            
+           
+            // app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }

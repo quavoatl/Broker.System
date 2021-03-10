@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Broker.System.Contracts.V1;
@@ -6,10 +7,12 @@ using Broker.System.Controllers.V1.Requests;
 using Broker.System.Controllers.V1.Responses;
 using Broker.System.Domain;
 using Broker.System.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Broker.System.Controllers.V1
 {
+    [Authorize]
     [ApiController]
     public class LimitController : Controller
     {
@@ -20,10 +23,20 @@ namespace Broker.System.Controllers.V1
             _limitService = limitService;
         }
 
-        [HttpGet(ApiRoutes.Limit.GetAll)]
-        public async Task<IActionResult> GetAll(int brokerId)
+        [HttpGet(ApiRoutes.Limit.GetAllByBroker)]
+        public async Task<IActionResult> GetAll(Guid brokerId)
         {
-            return Ok(await _limitService.GetLimitsAsync(brokerId));
+            var response = await _limitService.GetLimitsAsync(brokerId);
+            if (response != null) return Ok(response);
+            return NotFound();
+        }
+
+        [HttpGet(ApiRoutes.Limit.GetAll)]
+        public async Task<IActionResult> GetAll()
+        {
+            var response = await _limitService.GetLimitsAsync();
+            if (response != null) return Ok(response);
+            return NotFound();
         }
 
         [HttpPost(ApiRoutes.Limit.Create)]
@@ -39,7 +52,8 @@ namespace Broker.System.Controllers.V1
             var createdLimit = await _limitService.CreateLimitAsync(limit);
 
             var baseUrl = $"{HttpContext.Request.Scheme}://" + $"{HttpContext.Request.Host.ToUriComponent()}";
-            var locationUri = baseUrl + "/" + ApiRoutes.Limit.Get.Replace("{limitId}", createdLimit.Entity.LimitId.ToString());
+            var locationUri = baseUrl + "/" +
+                              ApiRoutes.Limit.Get.Replace("{limitId}", createdLimit.Entity.LimitId.ToString());
 
             var limitResponse = new LimitResponse()
                 {BrokerId = limit.BrokerId, LimitId = limit.LimitId, Value = limit.Value, CoverType = limit.CoverType};
