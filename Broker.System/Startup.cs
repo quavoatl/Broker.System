@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Broker.System.Installers;
 using Broker.System.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -28,19 +29,7 @@ namespace Broker.System
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConn")));
-            services.AddIdentityCore<IdentityUser>()
-                .AddEntityFrameworkStores<DbContext>();
-
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Latest);
-
-            services.AddSwaggerGen(x =>
-            {
-                x.SwaggerDoc("v1", new OpenApiInfo() { Title = "Broker Integration System", Version = "v1" });
-            });
-
+            services.InstallServices(Configuration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -57,10 +46,7 @@ namespace Broker.System
             var swaggerOptions = new SwaggerOptions();
             Configuration.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);
 
-            app.UseSwagger(option =>
-            {
-                option.RouteTemplate = swaggerOptions.JsonRoute;
-            });
+            app.UseSwagger(option => { option.RouteTemplate = swaggerOptions.JsonRoute; });
 
             app.UseSwaggerUI(option =>
             {
@@ -74,10 +60,7 @@ namespace Broker.System
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }

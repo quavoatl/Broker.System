@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Broker.System
+namespace Broker.System.Installers
 {
     public interface IInstaller
     {
