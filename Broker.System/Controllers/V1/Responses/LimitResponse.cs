@@ -1,6 +1,6 @@
-﻿namespace Broker.System.Domain
+﻿namespace Broker.System.Controllers.V1.Responses
 {
-    public class Limit
+    public class LimitResponse
     {
         public int BrokerId { get; set; }
         public int Value { get; set; }

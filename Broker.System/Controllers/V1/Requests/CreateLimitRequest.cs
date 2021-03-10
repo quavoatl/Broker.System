@@ -1,6 +1,6 @@
-﻿namespace Broker.System.Domain
+﻿namespace Broker.System.Controllers.V1.Requests
 {
-    public class Limit
+    public class CreateLimitRequest
     {
         public int BrokerId { get; set; }
         public int Value { get; set; }
