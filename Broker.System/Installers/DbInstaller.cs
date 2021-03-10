@@ -1,9 +1,9 @@
-﻿using Broker.System.Services;
+﻿using Broker.System.Data;
+using Broker.System.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using DbContext = Broker.System.Data.DbContext;
 
 namespace Broker.System.Installers
 {
@@ -11,12 +11,12 @@ namespace Broker.System.Installers
     {
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<DbContext>(options =>
-                SqlServerDbContextOptionsExtensions.UseSqlServer(options));
+            services.AddDbContext<BrokerDbContext>(options =>
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConn")));
             services.AddIdentityCore<IdentityUser>()
-                .AddEntityFrameworkStores<DbContext>();
+                .AddEntityFrameworkStores<BrokerDbContext>();
 
-            services.AddSingleton<ILimitService, LimitService>();
+            services.AddScoped<ILimitService, LimitService>();
         }
     }
 }

@@ -12,6 +12,7 @@
             public const string Get = Base + "/limit/{limitId}";
             public const string Update = Base + "/limit/{limitId}";
             public const string Create = Base + "/limit";
+            public const string Delete = Base + "/limit/{limitId}";
         }
         
         public static class Question

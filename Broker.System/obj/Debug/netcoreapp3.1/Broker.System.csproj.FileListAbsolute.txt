@@ -69,3 +69,8 @@ C:\Users\seantal\source\repos\Broker.System\Broker.System\bin\Debug\netcoreapp3.
 C:\Users\seantal\source\repos\Broker.System\Broker.System\bin\Debug\netcoreapp3.1\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\seantal\source\repos\Broker.System\Broker.System\bin\Debug\netcoreapp3.1\Swashbuckle.AspNetCore.SwaggerUI.dll
 C:\Users\seantal\source\repos\Broker.System\Broker.System\obj\Debug\netcoreapp3.1\Broker.System.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\seantal\source\repos\Broker.System\Broker.System\bin\Debug\netcoreapp3.1\Humanizer.dll
+C:\Users\seantal\source\repos\Broker.System\Broker.System\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Design.dll
+C:\Users\seantal\source\repos\Broker.System\Broker.System\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Relational.Design.dll
+C:\Users\seantal\source\repos\Broker.System\Broker.System\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.SqlServer.Design.dll
+C:\Users\seantal\source\repos\Broker.System\Broker.System\bin\Debug\netcoreapp3.1\dotnet-ef.dll

@@ -1,8 +1,10 @@
-﻿namespace Broker.System.Controllers.V1.Responses
+﻿using System;
+
+namespace Broker.System.Controllers.V1.Responses
 {
     public class LimitResponse
     {
-        public int BrokerId { get; set; }
+        public Guid BrokerId { get; set; }
         public int Value { get; set; }
         public int LimitId { get; set; }
         public string CoverType { get; set; }
