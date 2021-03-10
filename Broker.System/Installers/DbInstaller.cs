@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Broker.System.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +15,8 @@ namespace Broker.System.Installers
                 SqlServerDbContextOptionsExtensions.UseSqlServer(options));
             services.AddIdentityCore<IdentityUser>()
                 .AddEntityFrameworkStores<DbContext>();
+
+            services.AddSingleton<ILimitService, LimitService>();
         }
     }
 }

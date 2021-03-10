@@ -4,6 +4,7 @@ using Broker.System.Contracts.V1;
 using Broker.System.Controllers.V1.Requests;
 using Broker.System.Controllers.V1.Responses;
 using Broker.System.Domain;
+using Broker.System.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Broker.System.Controllers.V1
@@ -11,42 +12,50 @@ namespace Broker.System.Controllers.V1
     [ApiController]
     public class LimitController : Controller
     {
-        private readonly List<Limit> _limits;
+        private readonly ILimitService _limitService;
 
-        public LimitController()
+        public LimitController(ILimitService limitService)
         {
-            _limits = new List<Limit>();
-            _limits.Add(new Limit() {BrokerId = 1, Value = 10000});
-            _limits.Add(new Limit() {BrokerId = 1, Value = 20000});
-            _limits.Add(new Limit() {BrokerId = 1, Value = 30000});
-            _limits.Add(new Limit() {BrokerId = 1, Value = 40000});
-            _limits.Add(new Limit() {BrokerId = 1, Value = 50000});
+            _limitService = limitService;
         }
 
         [HttpGet(ApiRoutes.Limit.GetAll)]
-        public IActionResult GetAll(int id)
+        public IActionResult GetAll(int brokerId)
         {
-            return Ok(_limits.Where(l => l.BrokerId.Equals(id)));
+            return Ok(_limitService.GetLimits(brokerId));
         }
 
         [HttpPost(ApiRoutes.Limit.Create)]
         public IActionResult Create([FromBody] CreateLimitRequest limitRequest)
         {
             Limit limit = null;
-            if (limitRequest.BrokerId != null)
+            if (limitRequest.BrokerId != 0)
             {
                 limit = new Limit()
-                    {BrokerId = limitRequest.BrokerId, Value = limitRequest.Value, CoverType = limitRequest.CoverType};
-                
-                _limits.Add(limit);
+                {
+                    BrokerId = limitRequest.BrokerId, LimitId = limitRequest.LimitId, Value = limitRequest.Value,
+                    CoverType = limitRequest.CoverType
+                };
+
+                _limitService.AddLimit(limit);
             }
 
             var baseUrl = $"{HttpContext.Request.Scheme}://" + $"{HttpContext.Request.Host.ToUriComponent()}";
-            var locationUri = baseUrl + "/" + ApiRoutes.Limit.Get.Replace("{id}", limitRequest.BrokerId.ToString());
+            var locationUri = baseUrl + "/" + ApiRoutes.Limit.Get.Replace("{limitId}", limitRequest.LimitId.ToString());
 
             var limitResponse = new LimitResponse()
-                {BrokerId = limit.BrokerId, Value = limit.Value, CoverType = limit.CoverType};
+                {BrokerId = limit.BrokerId, LimitId = limit.LimitId, Value = limit.Value, CoverType = limit.CoverType};
             return Created(locationUri, limitResponse);
+        }
+
+        [HttpGet(ApiRoutes.Limit.Get)]
+        public IActionResult Get([FromRoute] int limitId)
+        {
+            var limit = _limitService.GetById(limitId);
+
+            if (limit == null) return NotFound(new {name = "Resource not found!"});
+
+            return Ok(limit);
         }
     }
 }

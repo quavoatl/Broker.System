@@ -8,9 +8,9 @@
 
         public static class Limit
         {
-            public const string GetAll = Base + "/limits/{id}";
-            public const string Get = Base + "/limit/{id}";
-            public const string Create = Base + "/limits";
+            public const string GetAll = Base + "/limits/{brokerId}";
+            public const string Get = Base + "/limit/{limitId}";
+            public const string Create = Base + "/limit";
         }
         
         public static class Question
