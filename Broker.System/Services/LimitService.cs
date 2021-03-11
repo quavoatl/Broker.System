@@ -18,7 +18,7 @@ namespace Broker.System.Services
             _brokerDbContext = brokerDbContext;
         }
 
-        public async Task<List<Limit>> GetLimitsAsync(Guid brokerId)
+        public async Task<List<Limit>> GetLimitsAsync(string brokerId)
         {
             return await EntityFrameworkQueryableExtensions.ToListAsync(
                 _brokerDbContext.Limits.Where(l => l.BrokerId.Equals(brokerId)));
@@ -35,7 +35,7 @@ namespace Broker.System.Services
                 _brokerDbContext.Limits.Where(l => l.LimitId.Equals(limitId)));
         }
 
-        public async Task<bool> UpdateLimitAsync(Limit limitToUpdate)
+        public async Task<bool> UpdateAsync(Limit limitToUpdate)
         {
             _brokerDbContext.Limits.Update(limitToUpdate);
             var update = await _brokerDbContext.SaveChangesAsync();
@@ -43,7 +43,7 @@ namespace Broker.System.Services
             return update > 0;
         }
 
-        public async Task<bool> DeleteLimitAsync(int limitId)
+        public async Task<bool> DeleteAsync(int limitId)
         {
             var limitFromList = await GetByIdAsync(limitId);
 
@@ -53,14 +53,26 @@ namespace Broker.System.Services
                 var deleted = await _brokerDbContext.SaveChangesAsync();
                 return deleted > 0;
             }
+
             return false;
         }
 
-        public async Task<EntityEntry<Limit>> CreateLimitAsync(Limit limit)
+        public async Task<EntityEntry<Limit>> CreateAsync(Limit limit)
         {
             var res = await _brokerDbContext.Limits.AddAsync(limit);
             var created = await _brokerDbContext.SaveChangesAsync();
             return res;
+        }
+
+        public async Task<bool> UserOwnsLimit(int limitId, string userId)
+        {
+            var limit = await _brokerDbContext.Limits.AsNoTracking().SingleOrDefaultAsync(x => x.LimitId == limitId);
+
+            if (limit == null) return false;
+
+            if (limit.BrokerId == userId) return true;
+
+            return false;
         }
     }
 }

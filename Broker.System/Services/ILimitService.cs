@@ -8,11 +8,12 @@ namespace Broker.System.Services
 {
     public interface ILimitService
     {
-        Task<List<Limit>> GetLimitsAsync(Guid brokerId);
+        Task<List<Limit>> GetLimitsAsync(string brokerId);
         Task<List<Limit>> GetLimitsAsync();
         Task<Limit> GetByIdAsync(int limitId);
-        Task<bool> UpdateLimitAsync(Limit limitToUpdate);
-        Task<bool> DeleteLimitAsync(int limitId);
-        Task<EntityEntry<Limit>> CreateLimitAsync(Limit limit);
+        Task<bool> UpdateAsync(Limit limitToUpdate);
+        Task<bool> DeleteAsync(int limitId);
+        Task<EntityEntry<Limit>> CreateAsync(Limit limit);
+        Task<bool> UserOwnsLimit(int limitId, string userId);
     }
 }

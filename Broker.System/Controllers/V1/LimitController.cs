@@ -6,6 +6,7 @@ using Broker.System.Contracts.V1;
 using Broker.System.Controllers.V1.Requests;
 using Broker.System.Controllers.V1.Responses;
 using Broker.System.Domain;
+using Broker.System.Extensions;
 using Broker.System.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -25,7 +26,7 @@ namespace Broker.System.Controllers.V1
         }
 
         [HttpGet(ApiRoutes.Limit.GetAllByBroker)]
-        public async Task<IActionResult> GetAll(Guid brokerId)
+        public async Task<IActionResult> GetAll(string brokerId)
         {
             var response = await _limitService.GetLimitsAsync(brokerId);
             if (response != null) return Ok(response);
@@ -45,12 +46,12 @@ namespace Broker.System.Controllers.V1
         {
             Limit limit = new Limit()
             {
-                BrokerId = limitRequest.BrokerId,
+                BrokerId = HttpContext.GetUserId(),
                 Value = limitRequest.Value,
                 CoverType = limitRequest.CoverType
             };
 
-            var createdLimit = await _limitService.CreateLimitAsync(limit);
+            var createdLimit = await _limitService.CreateAsync(limit);
 
             var baseUrl = $"{HttpContext.Request.Scheme}://" + $"{HttpContext.Request.Host.ToUriComponent()}";
             var locationUri = baseUrl + "/" +
@@ -75,24 +76,32 @@ namespace Broker.System.Controllers.V1
         public async Task<IActionResult> Update([FromRoute] int limitId,
             [FromBody] UpdateLimitRequest updateLimitRequest)
         {
-            var newLimit = new Limit()
-            {
-                LimitId = limitId,
-                BrokerId = updateLimitRequest.BrokerId,
-                Value = updateLimitRequest.Value,
-                CoverType = updateLimitRequest.CoverType
-            };
+            var userOwnsPost = await _limitService.UserOwnsLimit(limitId, HttpContext.GetUserId());
 
-            var updated = await _limitService.UpdateLimitAsync(newLimit);
-            if (updated) return Ok(newLimit);
-            return NotFound();
+            if (userOwnsPost)
+            {
+                var limitFromDb = await _limitService.GetByIdAsync(limitId);
+                limitFromDb.Value = updateLimitRequest.Value;
+                limitFromDb.CoverType = updateLimitRequest.CoverType;
+
+                var updated = await _limitService.UpdateAsync(limitFromDb);
+                if (updated) return Ok(limitFromDb);
+            }
+
+            return BadRequest(new {error = "You do not own this post !"});
         }
 
         [HttpDelete(ApiRoutes.Limit.Delete)]
         public async Task<IActionResult> Delete([FromRoute] int limitId)
         {
-            var deleted = await _limitService.DeleteLimitAsync(limitId);
-            if (deleted) return NoContent();
+            var userOwnsPost = await _limitService.UserOwnsLimit(limitId, HttpContext.GetUserId());
+
+            if (userOwnsPost)
+            {
+                var deleted = await _limitService.DeleteAsync(limitId);
+                if (deleted) return NoContent();
+            }
+
             return NotFound();
         }
     }

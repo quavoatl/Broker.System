@@ -26,8 +26,8 @@ namespace Broker.System.Migrations.BrokerDb
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<Guid>("BrokerId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("BrokerId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CoverType")
                         .HasColumnType("nvarchar(max)");
@@ -36,6 +36,8 @@ namespace Broker.System.Migrations.BrokerDb
                         .HasColumnType("int");
 
                     b.HasKey("LimitId");
+
+                    b.HasIndex("BrokerId");
 
                     b.ToTable("Limits");
                 });
@@ -234,6 +236,15 @@ namespace Broker.System.Migrations.BrokerDb
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("Broker.System.Domain.Limit", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("BrokerId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
