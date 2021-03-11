@@ -44,10 +44,11 @@ namespace Broker.System
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
-            // app.UseRouting();
+            //app.UseStatusCodePages();
             app.UseAuthentication();
+            app.UseRouting();
             app.UseAuthorization();
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
             var swaggerOptions = new SwaggerOptions();
             Configuration.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);
@@ -58,9 +59,6 @@ namespace Broker.System
             {
                 option.SwaggerEndpoint(swaggerOptions.UIEndpoint, swaggerOptions.Description);
             });
-            
-           
-            // app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }
