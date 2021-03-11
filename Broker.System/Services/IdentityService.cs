@@ -51,6 +51,35 @@ namespace Broker.System.Services
                 };
             }
 
+            return GenerateAuthenticationResultForUser(newUser);
+        }
+        
+        public async Task<AuthenticationResult> LoginAsync(string email, string password)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return new AuthenticationResult()
+                {
+                    Errors = new[] {"User does not exist"}
+                };
+            }
+
+            var userHadValidPassword = await _userManager.CheckPasswordAsync(user, password);
+
+            if (!userHadValidPassword)
+            {
+                return new AuthenticationResult()
+                {
+                    Errors = new[] {"Email/Password combination is wrong"}
+                };
+            }
+        
+            return GenerateAuthenticationResultForUser(user);
+        }
+
+        private AuthenticationResult GenerateAuthenticationResultForUser(IdentityUser newUser)
+        {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
 
@@ -78,5 +107,7 @@ namespace Broker.System.Services
                 Token = tokenHandler.WriteToken(token)
             };
         }
+
+       
     }
 }
