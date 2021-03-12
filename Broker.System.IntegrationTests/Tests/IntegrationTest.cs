@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -11,6 +12,7 @@ using Broker.System.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Xunit;
@@ -29,12 +31,31 @@ namespace Broker.System.IntegrationTests.Tests
                 {
                     builder.ConfigureServices(services =>
                     {
-                  
-                        services.RemoveAll(typeof(BrokerDbContext));
-                        services.AddDbContext<BrokerDbContext>(
-                            opt => opt.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()),Scoped,ServiceLifetime.Scoped);
-                        
-                        
+                        // Remove database registrations
+                        CleanupDatabaseRegistrations<BrokerDbContext>(services);
+
+                        // Create a new service provider.
+                        var serviceProvider = new ServiceCollection()
+                            .AddEntityFrameworkInMemoryDatabase()
+                            .BuildServiceProvider();
+
+                        // Add a database context (AppDbContext) using an in-memory database for testing.
+                        services.AddDbContext<BrokerDbContext>(options =>
+                        {
+                            options.UseInMemoryDatabase("IntegrationTests");
+                            options.UseInternalServiceProvider(serviceProvider);
+                        });
+
+                        // BuildDetails the service provider.
+                        var sp = services.BuildServiceProvider();
+
+                        // Create a scope to obtain a reference to the database contexts
+                        using var scope = sp.CreateScope();
+                        var scopedServices = scope.ServiceProvider;
+                        var appDb = scopedServices.GetRequiredService<BrokerDbContext>();
+
+                        // Ensure the database is created.
+                        appDb.Database.EnsureCreated();
                     });
                 });
 
@@ -58,6 +79,34 @@ namespace Broker.System.IntegrationTests.Tests
             var registrationResponse = await response.Content.ReadFromJsonAsync<AuthSuccessResponse>();
 
             return registrationResponse.Token;
+        }
+
+
+        /// <summary>
+        /// Cleanup EF Core service registrations
+        /// </summary>
+        /// <typeparam name="TDbContext"></typeparam>
+        /// <param name="services"></param>
+        private void CleanupDatabaseRegistrations<TDbContext>(IServiceCollection services) where TDbContext : DbContext
+        {
+            var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<TDbContext>));
+            if (descriptor != null)
+            {
+                services.Remove(descriptor);
+            }
+
+            descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions));
+            if (descriptor != null)
+            {
+                services.Remove(descriptor);
+            }
+
+            descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(TDbContext));
+            if (descriptor != null)
+            {
+                services.Remove(descriptor);
+            }
+
         }
     }
 }

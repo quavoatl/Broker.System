@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "qKAIARwd6GP9GclwqTQ7qUuYwGAnEyxqxgnxLqBuE79nmojEKXkwShfHUH8Xy/fyQekeSnjwaTJA5aLsOztjCA==",
+  "dgSpecHash": "NEXRjGhNCoYFnoIU/kpMgCtDtJXUPdfZMzQpI5Y0RftPqTjMHPg3H+zdoBfXQaB747vlVi1JiJbR/RpJ5LaMkw==",
   "success": true,
   "projectFilePath": "C:\\Users\\seantal\\source\\repos\\Broker.System\\Broker.System.IntegrationTests\\Broker.System.IntegrationTests.csproj",
   "expectedPackageFiles": [
@@ -18,7 +18,7 @@
     "C:\\Users\\seantal\\.nuget\\packages\\microsoft.entityframeworkcore\\5.0.4\\microsoft.entityframeworkcore.5.0.4.nupkg.sha512",
     "C:\\Users\\seantal\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\5.0.4\\microsoft.entityframeworkcore.abstractions.5.0.4.nupkg.sha512",
     "C:\\Users\\seantal\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\5.0.4\\microsoft.entityframeworkcore.analyzers.5.0.4.nupkg.sha512",
-    "C:\\Users\\seantal\\.nuget\\packages\\microsoft.entityframeworkcore.inmemory\\3.1.0\\microsoft.entityframeworkcore.inmemory.3.1.0.nupkg.sha512",
+    "C:\\Users\\seantal\\.nuget\\packages\\microsoft.entityframeworkcore.inmemory\\5.0.4\\microsoft.entityframeworkcore.inmemory.5.0.4.nupkg.sha512",
     "C:\\Users\\seantal\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\5.0.4\\microsoft.entityframeworkcore.relational.5.0.4.nupkg.sha512",
     "C:\\Users\\seantal\\.nuget\\packages\\microsoft.entityframeworkcore.relational.design\\1.1.6\\microsoft.entityframeworkcore.relational.design.1.1.6.nupkg.sha512",
     "C:\\Users\\seantal\\.nuget\\packages\\microsoft.entityframeworkcore.sqlserver\\5.0.4\\microsoft.entityframeworkcore.sqlserver.5.0.4.nupkg.sha512",
