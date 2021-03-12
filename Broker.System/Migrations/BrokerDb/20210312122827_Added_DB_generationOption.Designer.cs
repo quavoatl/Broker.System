@@ -4,14 +4,16 @@ using Broker.System.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Broker.System.Migrations.BrokerDb
 {
     [DbContext(typeof(BrokerDbContext))]
-    partial class BrokerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210312122827_Added_DB_generationOption")]
+    partial class Added_DB_generationOption
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

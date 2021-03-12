@@ -15,5 +15,6 @@ namespace Broker.System.Data
        
 
         public DbSet<Limit> Limits { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
     }
 }

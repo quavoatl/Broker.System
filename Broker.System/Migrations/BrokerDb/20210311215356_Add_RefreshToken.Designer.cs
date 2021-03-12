@@ -4,14 +4,16 @@ using Broker.System.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Broker.System.Migrations.BrokerDb
 {
     [DbContext(typeof(BrokerDbContext))]
-    partial class BrokerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210311215356_Add_RefreshToken")]
+    partial class Add_RefreshToken
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,7 +47,6 @@ namespace Broker.System.Migrations.BrokerDb
             modelBuilder.Entity("Broker.System.Domain.RefreshToken", b =>
                 {
                     b.Property<string>("Token")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreationDate")
