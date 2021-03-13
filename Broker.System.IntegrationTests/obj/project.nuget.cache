@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "NEXRjGhNCoYFnoIU/kpMgCtDtJXUPdfZMzQpI5Y0RftPqTjMHPg3H+zdoBfXQaB747vlVi1JiJbR/RpJ5LaMkw==",
+  "dgSpecHash": "ith4a8MbAGKefAhlXWFJ9F/zrip7+Cjhu8L8C17B4EcMkncQ7+diIegKq9z4k1VjOVF5lXjP8Snfmc3YBR3Beg==",
   "success": true,
   "projectFilePath": "C:\\Users\\seantal\\source\\repos\\Broker.System\\Broker.System.IntegrationTests\\Broker.System.IntegrationTests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\seantal\\.nuget\\packages\\coverlet.collector\\1.3.0\\coverlet.collector.1.3.0.nupkg.sha512",
+    "C:\\Users\\seantal\\.nuget\\packages\\fluentassertions\\5.10.3\\fluentassertions.5.10.3.nupkg.sha512",
     "C:\\Users\\seantal\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\3.1.13\\microsoft.aspnetcore.authentication.jwtbearer.3.1.13.nupkg.sha512",
     "C:\\Users\\seantal\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\5.0.4\\microsoft.aspnetcore.cryptography.internal.5.0.4.nupkg.sha512",
     "C:\\Users\\seantal\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\5.0.4\\microsoft.aspnetcore.cryptography.keyderivation.5.0.4.nupkg.sha512",

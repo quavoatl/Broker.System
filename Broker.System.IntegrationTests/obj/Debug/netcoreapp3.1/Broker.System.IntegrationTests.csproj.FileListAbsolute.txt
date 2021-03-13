@@ -423,3 +423,4 @@ C:\Users\seantal\source\repos\Broker.System\Broker.System.IntegrationTests\obj\D
 C:\Users\seantal\source\repos\Broker.System\Broker.System.IntegrationTests\obj\Debug\netcoreapp3.1\Broker.System.IntegrationTests.pdb
 C:\Users\seantal\source\repos\Broker.System\Broker.System.IntegrationTests\obj\Debug\netcoreapp3.1\Broker.System.IntegrationTests.genruntimeconfig.cache
 C:\Users\seantal\source\repos\Broker.System\Broker.System.IntegrationTests\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.InMemory.dll
+C:\Users\seantal\source\repos\Broker.System\Broker.System.IntegrationTests\bin\Debug\netcoreapp3.1\FluentAssertions.dll

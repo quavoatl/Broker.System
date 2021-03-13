@@ -1,4 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http.Json;
+using System.Threading.Tasks;
+using Broker.System.Contracts.V1;
+using Broker.System.Controllers.V1.Requests;
+using Broker.System.Domain;
+using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Xunit;
 
 namespace Broker.System.IntegrationTests.Tests
@@ -10,11 +18,44 @@ namespace Broker.System.IntegrationTests.Tests
         {
             // Arrange
             await AuthenticateAsync();
-
-
+            
             // Act
+            var getAllResponse = await TestClient.GetAsync(ApiRoutes.Limit.GetAll);
+            var x = await getAllResponse.Content.ReadFromJsonAsync<IEnumerable<Limit>>();
 
             // Assert
+            getAllResponse.StatusCode.Should().Be(StatusCodes.Status200OK);
+            x.Should().BeEmpty();
+        }
+        
+        [Fact]
+        public async Task GetAll_PostTwoLimits_ShouldReturnTwoLimits()
+        {
+            // Arrange
+            await AuthenticateAsync();
+            await TestClient.PostAsJsonAsync(ApiRoutes.Limit.Create, new CreateLimitRequest()
+            {
+                Value = 100,
+                CoverType = "theft"
+            });
+            await TestClient.PostAsJsonAsync(ApiRoutes.Limit.Create, new CreateLimitRequest()
+            {
+                Value = 200,
+                CoverType = "naturalhazards"
+            });
+            // Act
+            var getAllResponse = await TestClient.GetAsync(ApiRoutes.Limit.GetAll);
+            var x = await getAllResponse.Content.ReadFromJsonAsync<IEnumerable<Limit>>();
+
+            // Assert
+            getAllResponse.StatusCode.Should().Be(StatusCodes.Status200OK);
+            
+            x.ToList().Should().HaveCount(2);
+            x.ToList()[0].Value.Should().Be(100);
+            x.ToList()[0].CoverType.Should().Be("theft");
+            
+            x.ToList()[1].Value.Should().Be(200);
+            x.ToList()[1].CoverType.Should().Be("naturalhazards");
         }
     }
 }
