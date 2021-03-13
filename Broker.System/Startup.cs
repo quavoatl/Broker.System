@@ -45,9 +45,11 @@ namespace Broker.System
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            //app.UseStatusCodePages();
             app.UseAuthentication();
             app.UseRouting();
+            
+            app.UseCors("mata");
+            
             app.UseAuthorization();
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 

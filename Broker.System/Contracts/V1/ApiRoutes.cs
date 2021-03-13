@@ -27,5 +27,12 @@
             public const string Register = Base + "/identity/register";
             public const string Refresh = Base + "/identity/refresh";
         }
+
+        public static class LoginComponentApi
+        {
+            public const string Base = "http://localhost:5000/api/";
+            public const string Register = Base + "register";
+            public const string Login = Base + "login";
+        }
     }
 }

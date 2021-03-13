@@ -15,6 +15,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Xunit;
 using static Microsoft.Extensions.DependencyInjection.ServiceLifetime;
 
@@ -23,6 +25,7 @@ namespace Broker.System.IntegrationTests.Tests
     public class IntegrationTest
     {
         protected readonly HttpClient TestClient;
+        private static string LoginComponentUrl = "http://localhost:5000/";
 
         public IntegrationTest()
         {
@@ -65,22 +68,30 @@ namespace Broker.System.IntegrationTests.Tests
         protected async Task AuthenticateAsync()
         {
             TestClient.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", await GetJwtAsync());
+                new AuthenticationHeaderValue("Bearer", await GetJwtFromLoginComponentAsync());
         }
 
-        private async Task<string> GetJwtAsync()
+        private async Task<string> GetJwtFromLoginComponentAsync()
         {
-            var response = await TestClient.PostAsJsonAsync(ApiRoutes.Identity.Register, new UserRegistrationRequest()
+            HttpResponseMessage res;
+
+            using (var client = new HttpClient())
             {
-                Email = "test3@integration.test",
-                Password = "Password1234!"
-            });
+                var response = await client.PostAsJsonAsync("http://localhost:5000/api/login", new
+                {
+                    username = "integrationTestBroker@integration.com",
+                    password = "Test1234!"
+                });
+                res = response;
+            }
 
-            var registrationResponse = await response.Content.ReadFromJsonAsync<AuthSuccessResponse>();
+            var registrationResponse = await res.Content.ReadAsStringAsync();
 
-            return registrationResponse.Token;
+            var deserializedJObj = (JObject) JsonConvert.DeserializeObject(registrationResponse);
+            var token = (JValue) deserializedJObj["token"];
+
+            return token.Value<string>();
         }
-
 
         /// <summary>
         /// Cleanup EF Core service registrations
@@ -106,7 +117,6 @@ namespace Broker.System.IntegrationTests.Tests
             {
                 services.Remove(descriptor);
             }
-
         }
     }
 }

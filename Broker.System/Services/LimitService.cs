@@ -24,11 +24,6 @@ namespace Broker.System.Services
                 _brokerDbContext.Limits.Where(l => l.BrokerId.Equals(brokerId)));
         }
 
-        public async Task<List<Limit>> GetLimitsAsync()
-        {
-            return await EntityFrameworkQueryableExtensions.ToListAsync(_brokerDbContext.Limits);
-        }
-
         public async Task<Limit> GetByIdAsync(int limitId)
         {
             return await EntityFrameworkQueryableExtensions.FirstOrDefaultAsync(

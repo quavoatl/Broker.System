@@ -9,7 +9,7 @@ namespace Broker.System.Extensions
         {
             if (httpContext.User == null) return string.Empty;
 
-            return httpContext.User.Claims.Where(x => x.Type == "id").FirstOrDefault().Value;
+            return httpContext.User.Claims.Where(x => x.Type == "userId").FirstOrDefault().Value;
         }
     }
 }

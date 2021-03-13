@@ -4,6 +4,7 @@ using System.Text;
 using Broker.System.Options;
 using Broker.System.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +17,18 @@ namespace Broker.System.Installers
     {
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "mata",
+                    builder =>
+                    {
+                        builder.WithOrigins("*")
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                        ;
+                    });
+            });
+
             var jwtSettings = new JwtSettings();
             configuration.Bind(nameof(jwtSettings), jwtSettings);
             services.AddSingleton(jwtSettings);
@@ -25,16 +38,22 @@ namespace Broker.System.Installers
 
             var tokenValidationParameters = new TokenValidationParameters()
             {
-                ValidateIssuerSigningKey = true,
+                // ValidateIssuerSigningKey = true,
+                // IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings.Secret)),
+                // ValidateIssuer = false,
+                // ValidateAudience = false,
+                // RequireExpirationTime = false,
+                // ValidateLifetime = true
+                
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidAudience = jwtSettings.ValidAudience,
+                ValidIssuer = jwtSettings.ValidIssuer,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings.Secret)),
-                ValidateIssuer = false,
-                ValidateAudience = false,
-                RequireExpirationTime = false,
-                ValidateLifetime = true
             };
 
             services.AddSingleton(tokenValidationParameters);
-            
+
             services.AddAuthentication(x =>
                 {
                     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -46,6 +65,8 @@ namespace Broker.System.Installers
                     x.SaveToken = true;
                     x.TokenValidationParameters = tokenValidationParameters;
                 });
+
+            services.AddAuthorization();
 
             services.AddSwaggerGen(x =>
             {
@@ -61,7 +82,7 @@ namespace Broker.System.Installers
                 };
 
                 x.AddSecurityDefinition("Bearer", securityScheme);
-                
+
                 x.AddSecurityRequirement(new OpenApiSecurityRequirement()
                 {
                     {

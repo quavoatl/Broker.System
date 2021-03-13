@@ -2318,7 +2318,8 @@
           "Microsoft.EntityFrameworkCore.SqlServer": "5.0.4",
           "Microsoft.EntityFrameworkCore.SqlServer.Design": "1.1.6",
           "Microsoft.EntityFrameworkCore.Tools.DotNet": "2.0.3",
-          "Swashbuckle.AspNetCore": "6.1.0"
+          "Swashbuckle.AspNetCore": "6.1.0",
+          "System.Net.Http.Json": "3.2.1"
         },
         "runtime": {
           "Broker.System.dll": {}

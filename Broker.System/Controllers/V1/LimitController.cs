@@ -10,6 +10,7 @@ using Broker.System.Extensions;
 using Broker.System.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Broker.System.Controllers.V1
@@ -25,18 +26,11 @@ namespace Broker.System.Controllers.V1
             _limitService = limitService;
         }
 
-        [HttpGet(ApiRoutes.Limit.GetAllByBroker)]
-        public async Task<IActionResult> GetAll(string brokerId)
-        {
-            var response = await _limitService.GetLimitsAsync(brokerId);
-            if (response != null) return Ok(response);
-            return NotFound();
-        }
-
         [HttpGet(ApiRoutes.Limit.GetAll)]
         public async Task<IActionResult> GetAll()
         {
-            var response = await _limitService.GetLimitsAsync();
+            var userId = HttpContext.GetUserId();
+            var response = await _limitService.GetLimitsAsync(userId);
             if (response != null) return Ok(response);
             return NotFound();
         }
