@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Broker.System.Controllers.V1
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Broker")]
     [ApiController]
     public class LimitController : Controller
     {

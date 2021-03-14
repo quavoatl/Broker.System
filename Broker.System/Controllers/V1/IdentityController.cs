@@ -45,7 +45,8 @@ namespace Broker.System.Controllers.V1
                 {
                     email = registrationRequest.Email,
                     username = registrationRequest.Email,
-                    password = registrationRequest.Password
+                    password = registrationRequest.Password,
+                    isBroker = true
                 });
                 res = response;
             }
@@ -78,33 +79,41 @@ namespace Broker.System.Controllers.V1
         [HttpPost(ApiRoutes.Identity.Login)]
         public async Task<IActionResult> Login([FromBody] UserLoginRequest loginRequest)
         {
-            var authResponse = await _identityService.LoginAsync(loginRequest.Email, loginRequest.Password);
             HttpResponseMessage res;
+            
             using (var client = new HttpClient())
             {
-                var response = await client.PostAsJsonAsync("http://localhost:5000/api/register", new
+                var response = await client.PostAsJsonAsync(ApiRoutes.LoginComponentApi.Login, new
                 {
-                    email = "test3@integration.test",
-                    username = "test3@integration.test",
-                    password = "Password1234!",
-                    isbroker = true
+                    username = loginRequest.Email,
+                    password = loginRequest.Password
                 });
                 res = response;
-                var str = string.Empty;
             }
+            
+            var loginResponse = await res.Content.ReadAsStringAsync();
+            
+            var deserializedJObj = (JObject) JsonConvert.DeserializeObject(loginResponse);
+            var messages = deserializedJObj["messages"].Values<string>();
+            var status = deserializedJObj["success"].Value<bool>();
+
+            LoginResponse authResponse = new LoginResponse()
+            {
+                Messages = messages,
+                Success = status
+            };
 
             if (!authResponse.Success)
             {
                 return BadRequest(new AuthFailedResponse()
                 {
-                    Errors = authResponse.Errors
+                    Errors = authResponse.Messages
                 });
             }
 
             return Ok(new AuthSuccessResponse()
             {
-                Token = authResponse.Token,
-                RefreshToken = authResponse.RefreshToken
+                Token = authResponse.Messages.ToList()[0],
             });
         }
 

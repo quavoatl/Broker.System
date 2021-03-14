@@ -25,7 +25,6 @@ namespace Broker.System.IntegrationTests.Tests
     public class IntegrationTest
     {
         protected readonly HttpClient TestClient;
-        private static string LoginComponentUrl = "http://localhost:5000/";
 
         public IntegrationTest()
         {
@@ -77,7 +76,7 @@ namespace Broker.System.IntegrationTests.Tests
 
             using (var client = new HttpClient())
             {
-                var response = await client.PostAsJsonAsync("http://localhost:5000/api/login", new
+                var response = await client.PostAsJsonAsync(ApiRoutes.LoginComponentApi.Login, new
                 {
                     username = "integrationTestBroker@integration.com",
                     password = "Test1234!"
