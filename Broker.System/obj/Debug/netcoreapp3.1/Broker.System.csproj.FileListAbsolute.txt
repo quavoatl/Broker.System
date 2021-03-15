@@ -77,3 +77,5 @@ C:\Users\seantal\source\repos\Broker.System\Broker.System\bin\Debug\netcoreapp3.
 C:\Users\seantal\source\repos\Broker.System\Broker.System\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\seantal\source\repos\Broker.System\Broker.System\bin\Debug\netcoreapp3.1\System.Net.Http.Json.dll
 C:\Users\seantal\source\repos\Broker.System\Broker.System\bin\Debug\netcoreapp3.1\System.Text.Json.dll
+C:\Users\seantal\source\repos\Broker.System\Broker.System\bin\Debug\netcoreapp3.1\AutoMapper.dll
+C:\Users\seantal\source\repos\Broker.System\Broker.System\bin\Debug\netcoreapp3.1\AutoMapper.Extensions.Microsoft.DependencyInjection.dll

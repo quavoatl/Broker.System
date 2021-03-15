@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Broker.System.Contracts.V1;
 using Broker.System.Controllers.V1.Requests;
 using Broker.System.Controllers.V1.Responses;
@@ -20,18 +21,21 @@ namespace Broker.System.Controllers.V1
     public class LimitController : Controller
     {
         private readonly ILimitService _limitService;
+        private readonly IMapper _mapper;
 
-        public LimitController(ILimitService limitService)
+        public LimitController(ILimitService limitService, IMapper mapper)
         {
             _limitService = limitService;
+            _mapper = mapper;
         }
 
         [HttpGet(ApiRoutes.Limit.GetAll)]
         public async Task<IActionResult> GetAll()
         {
             var userId = HttpContext.GetUserId();
+            
             var response = await _limitService.GetLimitsAsync(userId);
-            if (response != null) return Ok(response);
+            if (response != null) return Ok(_mapper.Map<List<LimitResponse>>(response));
             return NotFound();
         }
 

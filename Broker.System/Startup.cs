@@ -30,6 +30,7 @@ namespace Broker.System
         public void ConfigureServices(IServiceCollection services)
         {
             services.InstallServices(Configuration);
+            services.AddAutoMapper(typeof(Startup));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

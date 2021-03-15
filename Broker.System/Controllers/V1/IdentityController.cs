@@ -114,6 +114,7 @@ namespace Broker.System.Controllers.V1
             return Ok(new AuthSuccessResponse()
             {
                 Token = authResponse.Messages.ToList()[0],
+                RefreshToken = authResponse.Messages.ToList()[1]
             });
         }
 
