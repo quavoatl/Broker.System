@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Broker.System.Options;
 using Broker.System.Services;
+using IdentityServer4.AccessTokenValidation;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Authorization;
@@ -51,15 +53,16 @@ namespace Broker.System.Installers
                 ValidIssuer = jwtSettings.ValidIssuer,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings.Secret)),
             };
-
+            
             services.AddSingleton(tokenValidationParameters);
 
             services.AddAuthentication(config =>
                 {
-                    config.DefaultScheme = "Cookie";
+                    config.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    config.DefaultScheme = "Cookies";
                     config.DefaultChallengeScheme = "oidc";
                 })
-                .AddCookie("Cookie")
+                .AddCookie("Cookies")
                 .AddOpenIdConnect("oidc", config =>
                 {
                     config.Authority = "https://localhost:5005";
@@ -69,9 +72,25 @@ namespace Broker.System.Installers
 
                     config.ResponseType = "code";
                 });
-
-
-            services.AddAuthorization();
+            
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.Authority = "https://localhost:5005";
+                    options.RequireHttpsMetadata = false;
+                    // // name of the API resource
+                     options.Audience = "api1";
+                });
+            
+            services.AddAuthorization(options =>
+            {
+                var defaultAuthorizationPolicyBuilder = new AuthorizationPolicyBuilder(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    JwtBearerDefaults.AuthenticationScheme);
+                defaultAuthorizationPolicyBuilder =
+                    defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
+                options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
+            });
 
             var req = new OpenApiSecurityRequirement()
             {

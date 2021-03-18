@@ -429,3 +429,4 @@ C:\Users\seantal\source\repos\Broker.System\Broker.System.IntegrationTests\bin\D
 C:\Users\seantal\source\repos\Broker.System\Broker.System.IntegrationTests\bin\Debug\netcoreapp3.1\IdentityModel.dll
 C:\Users\seantal\source\repos\Broker.System\Broker.System.IntegrationTests\bin\Debug\netcoreapp3.1\IdentityModel.AspNetCore.OAuth2Introspection.dll
 C:\Users\seantal\source\repos\Broker.System\Broker.System.IntegrationTests\bin\Debug\netcoreapp3.1\IdentityServer4.AccessTokenValidation.dll
+C:\Users\seantal\source\repos\Broker.System\Broker.System.IntegrationTests\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Authentication.OpenIdConnect.dll

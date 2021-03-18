@@ -13,6 +13,7 @@ using Broker.System.Data;
 using Broker.System.Installers;
 using Broker.System.Installers.CustomMiddleware;
 using Broker.System.Options;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -57,8 +58,20 @@ namespace Broker.System
             
             app.UseCors("mata");
             app.UseAuthentication();
+            app.Use(async (context, next) =>
+            {
+                await next();
+                var bearerAuth = context.Request.Headers["Authorization"]
+                    .FirstOrDefault()?.StartsWith("Bearer ") ?? false;
+                if (context.Response.StatusCode == 401
+                    && !context.User.Identity.IsAuthenticated
+                    && !bearerAuth)
+                {
+                    await context.ChallengeAsync("oidc");
+                }
+            });
             app.UseAuthorization();
-            app.UseEndpoints(endpoints => { endpoints.MapDefaultControllerRoute(); });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
             var swaggerOptions = new SwaggerOptions();
             Configuration.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);
@@ -67,7 +80,7 @@ namespace Broker.System
 
             app.UseSwaggerUI(options =>
             {
-                options.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                options.SwaggerEndpoint(swaggerOptions.UIEndpoint, "My API V1");
 
                 options.OAuthClientId("demo_api_swagger");
                 options.OAuthAppName("Demo API - Swagger");

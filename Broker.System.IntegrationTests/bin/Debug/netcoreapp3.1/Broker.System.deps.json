@@ -28,6 +28,7 @@
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "8.1.1",
           "IdentityServer4.AccessTokenValidation": "3.0.1",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "3.1.13",
+          "Microsoft.AspNetCore.Authentication.OpenIdConnect": "3.1.13",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "5.0.4",
           "Microsoft.EntityFrameworkCore.Design": "5.0.4",
           "Microsoft.EntityFrameworkCore.SqlServer": "5.0.4",
@@ -403,6 +404,20 @@
         },
         "compile": {
           "lib/netcoreapp3.1/Microsoft.AspNetCore.Authentication.JwtBearer.dll": {}
+        }
+      },
+      "Microsoft.AspNetCore.Authentication.OpenIdConnect/3.1.13": {
+        "dependencies": {
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "5.6.0"
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/Microsoft.AspNetCore.Authentication.OpenIdConnect.dll": {
+            "assemblyVersion": "3.1.13.0",
+            "fileVersion": "3.100.1321.11713"
+          }
+        },
+        "compile": {
+          "lib/netcoreapp3.1/Microsoft.AspNetCore.Authentication.OpenIdConnect.dll": {}
         }
       },
       "Microsoft.AspNetCore.Cryptography.Internal/5.0.4": {
@@ -3260,6 +3275,13 @@
       "sha512": "sha512-Pv5ns3MQZc7/u52BTb3g/XZBFAZ2xGwWG4r6EUusAHZ1pSiVX0lhwxF13gwPKckd116mfZ8Vo93U51Cly+kp4Q==",
       "path": "microsoft.aspnetcore.authentication.jwtbearer/3.1.13",
       "hashPath": "microsoft.aspnetcore.authentication.jwtbearer.3.1.13.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Authentication.OpenIdConnect/3.1.13": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-3InW2+tOteqVFkUDtzqlgd49lBpgVzH+uMAi4u1xHX8TyKwcdghEbfFcbzAQhQ0bb6w35HMfEp/O1KR4vcYFsA==",
+      "path": "microsoft.aspnetcore.authentication.openidconnect/3.1.13",
+      "hashPath": "microsoft.aspnetcore.authentication.openidconnect.3.1.13.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Cryptography.Internal/5.0.4": {
       "type": "package",

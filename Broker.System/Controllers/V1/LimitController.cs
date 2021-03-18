@@ -9,6 +9,7 @@ using Broker.System.Controllers.V1.Responses;
 using Broker.System.Domain;
 using Broker.System.Extensions;
 using Broker.System.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -16,7 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Broker.System.Controllers.V1
 {
-    [Authorize(Roles = "Broker")]
+    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     [ApiController]
     public class LimitController : Controller
     {
@@ -32,11 +33,13 @@ namespace Broker.System.Controllers.V1
         [HttpGet(ApiRoutes.Limit.GetAll)]
         public async Task<IActionResult> GetAll()
         {
-            var userId = HttpContext.GetUserId();
-
-            var response = await _limitService.GetLimitsAsync(userId);
-            if (response != null) return Ok(_mapper.Map<List<LimitResponse>>(response));
-            return NotFound();
+            return Ok(new {response = "blana"});
+            // //
+            // // var userId = HttpContext.GetUserId();
+            // //
+            // // var response = await _limitService.GetLimitsAsync(userId);
+            // // if (response != null) return Ok(_mapper.Map<List<LimitResponse>>(response));
+            // return NotFound();
         }
 
         [HttpPost(ApiRoutes.Limit.Create)]
