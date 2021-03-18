@@ -1,15 +1,22 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 using Broker.System.Options;
 using Broker.System.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OAuth;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 
 namespace Broker.System.Installers
 {
@@ -38,8 +45,8 @@ namespace Broker.System.Installers
 
             var tokenValidationParameters = new TokenValidationParameters()
             {
-                ValidateIssuer = true,
-                ValidateAudience = true,
+                //ValidateIssuer = true,
+               //ValidateAudience = true,
                 ValidAudience = jwtSettings.ValidAudience,
                 ValidIssuer = jwtSettings.ValidIssuer,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings.Secret)),
@@ -47,52 +54,67 @@ namespace Broker.System.Installers
 
             services.AddSingleton(tokenValidationParameters);
 
-            services.AddAuthentication(x =>
+            services.AddAuthentication(config =>
                 {
-                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    config.DefaultScheme = "Cookie";
+                    config.DefaultChallengeScheme = "oidc";
                 })
-                .AddJwtBearer(x =>
+                .AddCookie("Cookie")
+                .AddOpenIdConnect("oidc", config =>
                 {
-                    x.SaveToken = true;
-                    x.TokenValidationParameters = tokenValidationParameters;
+                    config.Authority = "https://localhost:5005";
+                    config.ClientId = "demo_api_swagger";
+                    config.ClientSecret = "secret";
+                    config.SaveTokens = true;
+
+                    config.ResponseType = "code";
                 });
+
 
             services.AddAuthorization();
 
-            services.AddSwaggerGen(x =>
+            var req = new OpenApiSecurityRequirement()
             {
-                x.SwaggerDoc("v1", new OpenApiInfo() {Title = "Broker Integration System", Version = "v1"});
-
-                var securityScheme = new OpenApiSecurityScheme
                 {
-                    Description = "JWT Authorization header using the bearer scheme",
-                    Name = "Authorization",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer"
-                };
-
-                x.AddSecurityDefinition("Bearer", securityScheme);
-
-                x.AddSecurityRequirement(new OpenApiSecurityRequirement()
-                {
+                    new OpenApiSecurityScheme
                     {
-                        new OpenApiSecurityScheme
+                        Reference = new OpenApiReference
                         {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            },
-                            Scheme = "oauth2",
-                            Name = "Bearer",
-                            In = ParameterLocation.Header,
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
                         },
-                        new List<string>()
+                        Scheme = "oauth2",
+                        Name = "Bearer",
+                        In = ParameterLocation.Cookie,
+                    },
+                    new List<string>()
+                }
+            };
+            
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo {Title = "Protected API", Version = "v1"});
+    
+                // we're going to be adding more here...
+                
+                options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.OAuth2,
+                    Flows = new OpenApiOAuthFlows
+                    {
+                        AuthorizationCode = new OpenApiOAuthFlow
+                        {
+                            AuthorizationUrl = new Uri("https://localhost:5005/connect/authorize"),
+                            TokenUrl = new Uri("https://localhost:5005/connect/token"),
+                            Scopes = new Dictionary<string, string>
+                            {
+                                {"api1", "Demo API - full access"}
+                            }
+                        }
                     }
                 });
+                
+                options.OperationFilter<AuthorizeCheckOperationFilter>();
             });
         }
     }

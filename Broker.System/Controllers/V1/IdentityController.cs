@@ -10,6 +10,7 @@ using Broker.System.Controllers.V1.Responses;
 using Broker.System.Domain;
 using Broker.System.Services;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -20,10 +21,17 @@ namespace Broker.System.Controllers.V1
     public class IdentityController : Controller
     {
         private readonly IIdentityService _identityService;
+        private IHttpClientFactory _client;
+        private IHttpContextAccessor _contextAccessor;
 
-        public IdentityController(IIdentityService identityService)
+        public IdentityController(
+            IIdentityService identityService,
+            IHttpClientFactory clientFactory,
+            IHttpContextAccessor contextAccessor)
         {
             _identityService = identityService;
+            _client = clientFactory;
+            _contextAccessor = contextAccessor;
         }
 
         [HttpPost(ApiRoutes.Identity.Register)]
@@ -80,6 +88,9 @@ namespace Broker.System.Controllers.V1
         public async Task<IActionResult> Login([FromBody] UserLoginRequest loginRequest)
         {
             HttpResponseMessage res;
+
+            // _client.CreateClient().get
+            
             
             using (var client = new HttpClient())
             {
@@ -90,9 +101,9 @@ namespace Broker.System.Controllers.V1
                 });
                 res = response;
             }
-            
+
             var loginResponse = await res.Content.ReadAsStringAsync();
-            
+
             var deserializedJObj = (JObject) JsonConvert.DeserializeObject(loginResponse);
             var messages = deserializedJObj["messages"].Values<string>();
             var status = deserializedJObj["success"].Value<bool>();
@@ -111,11 +122,16 @@ namespace Broker.System.Controllers.V1
                 });
             }
 
-            return Ok(new AuthSuccessResponse()
+            var authSuccesResponse = new AuthSuccessResponse()
             {
                 Token = authResponse.Messages.ToList()[0],
                 RefreshToken = authResponse.Messages.ToList()[1]
-            });
+            };
+
+            _identityService.WriteCookie(ApiRoutes.LoginComponentApi.JwtTokenCookieKey,authSuccesResponse.Token, Response);
+            _identityService.WriteCookie(ApiRoutes.LoginComponentApi.RefreshTokenCookieKey,authSuccesResponse.RefreshToken, Response);
+
+            return Ok(authSuccesResponse);
         }
 
         [HttpPost(ApiRoutes.Identity.Refresh)]
@@ -138,5 +154,9 @@ namespace Broker.System.Controllers.V1
                 RefreshToken = authResponse.RefreshToken
             });
         }
+
+        #region Private Helpers
+
+        #endregion
     }
 }

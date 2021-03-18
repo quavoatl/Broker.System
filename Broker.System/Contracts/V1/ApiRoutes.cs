@@ -30,9 +30,12 @@
 
         public static class LoginComponentApi
         {
+            public const string JwtTokenCookieKey = "jwt_token_key";
+            public const string RefreshTokenCookieKey = "refresh_token_key";
             public const string Base = "http://localhost:5000/api/";
             public const string Register = Base + "register";
             public const string Login = Base + "login";
+            public const string Refresh = Base + "refresh";
         }
     }
 }

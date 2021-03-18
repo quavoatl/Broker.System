@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Broker.System.Controllers.V1
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Broker")]
+    [Authorize(Roles = "Broker")]
     [ApiController]
     public class LimitController : Controller
     {
@@ -33,7 +33,7 @@ namespace Broker.System.Controllers.V1
         public async Task<IActionResult> GetAll()
         {
             var userId = HttpContext.GetUserId();
-            
+
             var response = await _limitService.GetLimitsAsync(userId);
             if (response != null) return Ok(_mapper.Map<List<LimitResponse>>(response));
             return NotFound();

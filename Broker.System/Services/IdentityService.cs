@@ -4,9 +4,11 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Broker.System.Controllers.V1.Responses;
 using Broker.System.Data;
 using Broker.System.Domain;
 using Broker.System.Options;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -203,6 +205,18 @@ namespace Broker.System.Services
                 Token = tokenHandler.WriteToken(token),
                 RefreshToken = refreshToken.Token
             };
+        }
+        
+        public void WriteCookie(string cookieKey, string cookieValue, HttpResponse response)
+        {
+            response.Cookies.Append(
+                cookieKey,
+                cookieValue,
+                new CookieOptions()
+                {
+                    HttpOnly = true,
+                    Path = "/"
+                });
         }
 
 
