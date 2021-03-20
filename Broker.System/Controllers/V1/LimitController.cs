@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Broker.System.Controllers.V1
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Customer")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Broker")]
     [ApiController]
     public class LimitController : Controller
     {
@@ -34,8 +34,9 @@ namespace Broker.System.Controllers.V1
         public async Task<IActionResult> GetAll()
         {
             var user = User.Identities.ToList();
+            var limits = await _limitService.GetLimitsAsync(HttpContext.GetUserId());
             
-            return Ok(new {response = "blana"});
+            return Ok(_mapper.Map<List<Limit>>(limits));
         }
 
         [HttpPost(ApiRoutes.Limit.Create)]
