@@ -9,12 +9,8 @@ namespace Broker.System.Data
     {
         public BrokerDbContext(DbContextOptions options) : base(options)
         {
-     
         }
 
-       
-
         public DbSet<Limit> Limits { get; set; }
-        public DbSet<RefreshToken> RefreshTokens { get; set; }
     }
 }

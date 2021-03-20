@@ -11,7 +11,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Broker.System.Data;
 using Broker.System.Installers;
-using Broker.System.Installers.CustomMiddleware;
 using Broker.System.Options;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
@@ -41,51 +40,29 @@ namespace Broker.System
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            //app.UseMiddleware<TokenExpiredMiddleware>();
+            if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
+            else app.UseHsts();
 
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseHsts();
-            }
+            var swaggerOptions = app.ApplicationServices.GetRequiredService<SwaggerOptions>();
             
             app.UseHttpsRedirection();
+            //app.UseCors("mata");
             app.UseStaticFiles();
             app.UseRouting();
             
-            app.UseCors("mata");
-            app.UseAuthentication();
-            app.Use(async (context, next) =>
+            app.UseSwagger(option => { option.RouteTemplate = swaggerOptions.JsonRoute; });
+            app.UseSwaggerUI(options =>
             {
-                await next();
-                var bearerAuth = context.Request.Headers["Authorization"]
-                    .FirstOrDefault()?.StartsWith("Bearer ") ?? false;
-                if (context.Response.StatusCode == 401
-                    && !context.User.Identity.IsAuthenticated
-                    && !bearerAuth)
-                {
-                    await context.ChallengeAsync("oidc");
-                }
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                options.OAuthClientId("broker_limits_rest_client");
+                options.OAuthUsePkce();
             });
+            
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
-            var swaggerOptions = new SwaggerOptions();
-            Configuration.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);
-
-            app.UseSwagger(option => { option.RouteTemplate = swaggerOptions.JsonRoute; });
-
-            app.UseSwaggerUI(options =>
-            {
-                options.SwaggerEndpoint(swaggerOptions.UIEndpoint, "My API V1");
-
-                options.OAuthClientId("demo_api_swagger");
-                options.OAuthAppName("Demo API - Swagger");
-                options.OAuthUsePkce();
-            });
+          
         }
     }
 }
