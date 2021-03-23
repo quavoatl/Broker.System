@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using AutoMapper;
 using Broker.System.Contracts.V1;
@@ -9,6 +10,8 @@ using Broker.System.Controllers.V1.Responses;
 using Broker.System.Domain;
 using Broker.System.Extensions;
 using Broker.System.Services;
+using IdentityModel.Client;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -30,13 +33,17 @@ namespace Broker.System.Controllers.V1
             _mapper = mapper;
         }
 
+
         [HttpGet(ApiRoutes.Limit.GetAll)]
         public async Task<IActionResult> GetAll()
         {
-            var user = User.Identities.ToList();
-            var limits = await _limitService.GetLimitsAsync(HttpContext.GetUserId());
-            
-            return Ok(_mapper.Map<List<Limit>>(limits));
+            var user = HttpContext.User;
+            // var user = User.Identities.ToList();
+            // var limits = await _limitService.GetLimitsAsync(HttpContext.GetUserId());
+            //
+            // return Ok(_mapper.Map<List<Limit>>(limits));
+            //var token = HttpContext.GetTokenAsync("access_token");
+            return Ok(new {response = "asd"});
         }
 
         [HttpPost(ApiRoutes.Limit.Create)]

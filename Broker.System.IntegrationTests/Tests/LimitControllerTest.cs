@@ -1,17 +1,23 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Broker.System.Contracts.V1;
 using Broker.System.Controllers.V1.Requests;
 using Broker.System.Domain;
+using Broker.System.IntegrationTests.Configuration;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
 namespace Broker.System.IntegrationTests.Tests
 {
     public class LimitControllerTest : IntegrationTest
+    
+    
     {
         [Fact]
         public async Task GetAll_WithoutAnyLimit_ReturnsEmpty()
@@ -22,7 +28,7 @@ namespace Broker.System.IntegrationTests.Tests
             // Act
             var getAllResponse = await TestClient.GetAsync(ApiRoutes.Limit.GetAll);
             var x = await getAllResponse.Content.ReadFromJsonAsync<IEnumerable<Limit>>();
-
+        
             // Assert
             getAllResponse.StatusCode.Should().Be(StatusCodes.Status200OK);
             x.Should().BeEmpty();
@@ -46,7 +52,7 @@ namespace Broker.System.IntegrationTests.Tests
             // Act
             var getAllResponse = await TestClient.GetAsync(ApiRoutes.Limit.GetAll);
             var x = await getAllResponse.Content.ReadFromJsonAsync<IEnumerable<Limit>>();
-
+        
             // Assert
             getAllResponse.StatusCode.Should().Be(StatusCodes.Status200OK);
             
@@ -57,5 +63,29 @@ namespace Broker.System.IntegrationTests.Tests
             x.ToList()[1].Value.Should().Be(200);
             x.ToList()[1].CoverType.Should().Be("naturalhazards");
         }
+
+
+       
+        
+        // [Theory]
+        // [InlineData("/Customers")]
+        // [InlineData("/Customers/Details")]
+        // [InlineData("/Customers/Details/1")]
+        // [InlineData("/Customers/Edit")]
+        // [InlineData("/Customers/Edit/1")]
+        // public async Task Get_EndpointsReturnFailToAnonymousUserForRestrictedUrls(string url)
+        // {
+        //     // Arrange
+        //     var client = Factory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
+        //
+        //     // Act
+        //     var response = await client.GetAsync(url);            
+        //
+        //     // Assert
+        //     Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
+        //
+        //     var redirectUrl = response.Headers.Location.LocalPath;
+        //     Assert.Equal("/auth/login", redirectUrl);            
+        // }
     }
 }

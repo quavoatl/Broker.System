@@ -11,13 +11,16 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Broker.System.Data;
 using Broker.System.Installers;
+using Broker.System.Installers.CustomMiddleware;
 using Broker.System.Options;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace Broker.System
 {
@@ -30,7 +33,7 @@ namespace Broker.System
 
         public IConfiguration Configuration { get; }
 
-        public void ConfigureServices(IServiceCollection services)
+        public virtual void ConfigureServices(IServiceCollection services)
         {
             services.AddHttpClient();
             services.AddHttpContextAccessor();
@@ -38,7 +41,7 @@ namespace Broker.System
             services.AddAutoMapper(typeof(Startup));
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public virtual void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
             else app.UseHsts();
@@ -57,8 +60,15 @@ namespace Broker.System
                 options.OAuthClientId("broker_limits_rest_client");
                 options.OAuthUsePkce();
             });
-            
+
             app.UseAuthentication();
+            // app.Use(next => async context =>
+            // {
+            //     var users = new SignInIntegrationTestUserHelper();
+            //     await users.SignInIntegrationTestUser(context);
+            //     await next.Invoke(context);
+            // });
+            
             app.UseAuthorization();
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 

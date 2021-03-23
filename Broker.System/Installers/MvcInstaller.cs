@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Broker.System.Contracts.V1;
+using Broker.System.Filters;
 using Broker.System.Options;
 using Broker.System.Services;
 using IdentityServer4.AccessTokenValidation;
@@ -16,8 +18,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
@@ -43,6 +47,8 @@ namespace Broker.System.Installers
             //         });
             // });
 
+            IdentityModelEventSource.ShowPII = true;
+            
             var jwtSettings = new JwtSettings();
             configuration.Bind(nameof(jwtSettings), jwtSettings);
             services.AddSingleton(jwtSettings);
@@ -51,8 +57,8 @@ namespace Broker.System.Installers
             configuration.Bind(nameof(swaggerOptions), swaggerOptions);
             services.AddSingleton(swaggerOptions);
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Latest);
-           
+             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Latest);
+
             services.AddAuthentication(config =>
                 {
                     config.DefaultScheme = "Cookies";
@@ -74,7 +80,7 @@ namespace Broker.System.Installers
                 {
                     config.Authority = "https://localhost:5005";
                     config.ClientId = "broker_limits_rest_client";
-                    config.ClientSecret = "secret";
+                    config.ClientSecret = "secretsecretsecret";
                     config.SaveTokens = true;
                     config.ResponseType = "code";
                     config.GetClaimsFromUserInfoEndpoint = true;
