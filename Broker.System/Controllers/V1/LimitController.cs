@@ -33,17 +33,15 @@ namespace Broker.System.Controllers.V1
             _mapper = mapper;
         }
 
-
         [HttpGet(ApiRoutes.Limit.GetAll)]
         public async Task<IActionResult> GetAll()
         {
-            var user = HttpContext.User;
-            // var user = User.Identities.ToList();
-            // var limits = await _limitService.GetLimitsAsync(HttpContext.GetUserId());
-            //
-            // return Ok(_mapper.Map<List<Limit>>(limits));
-            //var token = HttpContext.GetTokenAsync("access_token");
-            return Ok(new {response = "asd"});
+             var user = User.Identities.ToList();
+             var limits = await _limitService.GetLimitsAsync(HttpContext.GetUserId());
+
+             if (limits.Count == 0)  return NoContent();
+             
+             return Ok(_mapper.Map<List<LimitResponse>>(limits));
         }
 
         [HttpPost(ApiRoutes.Limit.Create)]
@@ -62,24 +60,22 @@ namespace Broker.System.Controllers.V1
             var locationUri = baseUrl + "/" +
                               ApiRoutes.Limit.Get.Replace("{limitId}", createdLimit.Entity.LimitId.ToString());
 
-            var limitResponse = new LimitResponse()
-                {BrokerId = limit.BrokerId, LimitId = limit.LimitId, Value = limit.Value, CoverType = limit.CoverType};
-            return Created(locationUri, limitResponse);
+            return Created(locationUri, _mapper.Map<LimitResponse>(limit));
         }
 
         [HttpGet(ApiRoutes.Limit.Get)]
         public async Task<IActionResult> Get([FromRoute] int limitId)
         {
             var limit = await _limitService.GetByIdAsync(limitId);
+            if (limit == null) return NoContent();
 
-            if (limit == null) return NotFound(new {name = "Resource not found!"});
-
-            return Ok(limit);
+            return Ok(_mapper.Map<LimitResponse>(limit));
         }
 
         [HttpPut(ApiRoutes.Limit.Update)]
-        public async Task<IActionResult> Update([FromRoute] int limitId,
-            [FromBody] UpdateLimitRequest updateLimitRequest)
+        public async Task<IActionResult> Update(
+                                                [FromRoute] int limitId,
+                                                [FromBody] UpdateLimitRequest updateLimitRequest)
         {
             var userOwnsPost = await _limitService.UserOwnsLimit(limitId, HttpContext.GetUserId());
 
@@ -90,7 +86,8 @@ namespace Broker.System.Controllers.V1
                 limitFromDb.CoverType = updateLimitRequest.CoverType;
 
                 var updated = await _limitService.UpdateAsync(limitFromDb);
-                if (updated) return Ok(limitFromDb);
+                
+                if (updated) return Ok(_mapper.Map<LimitResponse>(limitFromDb));
             }
 
             return BadRequest(new {error = "You do not own this post !"});

@@ -15,18 +15,6 @@
             public const string Create = Base + "/limit";
             public const string Delete = Base + "/limit/{limitId}";
         }
-        
-        public static class Question
-        {
-            public const string GetAll = Base + "/questions/{id}";
-        }
-        
-        public static class Identity
-        {
-            public const string Login = Base + "/identity/login";
-            public const string Register = Base + "/identity/register";
-            public const string Refresh = Base + "/identity/refresh";
-        }
 
         public static class LoginComponentApi
         {

@@ -41,7 +41,7 @@ namespace Broker.System
             services.AddAutoMapper(typeof(Startup));
         }
 
-        public virtual void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
             else app.UseHsts();
@@ -49,9 +49,8 @@ namespace Broker.System
             var swaggerOptions = app.ApplicationServices.GetRequiredService<SwaggerOptions>();
             
             app.UseHttpsRedirection();
-            //app.UseCors("mata");
             app.UseStaticFiles();
-            app.UseRouting();
+            app.UseRouting(); 
             
             app.UseSwagger(option => { option.RouteTemplate = swaggerOptions.JsonRoute; });
             app.UseSwaggerUI(options =>
@@ -61,14 +60,7 @@ namespace Broker.System
                 options.OAuthUsePkce();
             });
 
-            app.UseAuthentication();
-            // app.Use(next => async context =>
-            // {
-            //     var users = new SignInIntegrationTestUserHelper();
-            //     await users.SignInIntegrationTestUser(context);
-            //     await next.Invoke(context);
-            // });
-            
+            app.UseAuthentication(); 
             app.UseAuthorization();
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
