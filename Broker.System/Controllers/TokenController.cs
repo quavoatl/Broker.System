@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Broker.System.Controllers.V1.Requests;
 using Broker.System.Controllers.V1.Responses;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Mvc;
@@ -9,8 +10,8 @@ namespace Broker.System.Controllers
 {
     public class TokenController : Controller
     {
-        [HttpGet("api/v1/tokenDoc")]
-        public async Task<IActionResult> TokenDoc()
+        [HttpPost("api/v1/tokenRequest")]
+        public async Task<IActionResult> TokenDoc([FromBody] PasswordGrantTokenRequest tokenRequest)
         {
             string token = string.Empty;
             using (var client = new HttpClient())
@@ -19,16 +20,16 @@ namespace Broker.System.Controllers
                 var tokenResponse = await client.RequestPasswordTokenAsync(new PasswordTokenRequest
                 {
                     Address = discoveryDoc.TokenEndpoint,
-                    ClientId = "broker_limits_rest_client_tests",
-                    
-                    ClientSecret = "secret",
-                    UserName = "user100@example.com",
-                    Password = "Password1234!"
+
+                    ClientId = tokenRequest.ClientId,
+                    ClientSecret = tokenRequest.Secret,
+                    UserName = tokenRequest.Email,
+                    Password = tokenRequest.Password
                 });
 
                 token = tokenResponse.AccessToken;
             }
-          
+
             return Ok(new TokenResponseObj() {TokenValue = token});
         }
     }

@@ -10,7 +10,6 @@ using Broker.System.Contracts.V1;
 using Broker.System.Controllers.V1.Requests;
 using Broker.System.Controllers.V1.Responses;
 using Broker.System.Data;
-using Broker.System.IntegrationTests.Configuration;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;

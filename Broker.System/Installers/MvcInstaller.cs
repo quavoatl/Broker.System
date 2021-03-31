@@ -35,18 +35,6 @@ namespace Broker.System.Installers
             services.AddHttpClient();
             services.AddControllers();
             
-            // services.AddCors(options =>
-            // {
-            //     options.AddPolicy(name: "mata",
-            //         builder =>
-            //         {
-            //             builder.WithOrigins("*")
-            //                 .AllowAnyHeader()
-            //                 .AllowAnyMethod();
-            //             ;
-            //         });
-            // });
-
             IdentityModelEventSource.ShowPII = true;
             
             var jwtSettings = new JwtSettings();
@@ -80,7 +68,7 @@ namespace Broker.System.Installers
                 {
                     config.Authority = "https://localhost:5005";
                     config.ClientId = "broker_limits_rest_client";
-                    config.ClientSecret = "secretsecretsecret";
+                    config.ClientSecret = "secret";
                     config.SaveTokens = true;
                     config.ResponseType = "code";
                     config.GetClaimsFromUserInfoEndpoint = true;

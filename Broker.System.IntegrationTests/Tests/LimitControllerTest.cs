@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Broker.System.Contracts.V1;
 using Broker.System.Controllers.V1.Requests;
 using Broker.System.Domain;
-using Broker.System.IntegrationTests.Configuration;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;

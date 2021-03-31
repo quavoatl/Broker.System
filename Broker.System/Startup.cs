@@ -11,7 +11,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Broker.System.Data;
 using Broker.System.Installers;
-using Broker.System.Installers.CustomMiddleware;
 using Broker.System.Options;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
