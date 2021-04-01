@@ -67,32 +67,24 @@ namespace Broker.System.IntegrationTests.Tests
              TestClient = app.CreateClient();
          }
         
-         protected async Task AuthenticateAsync()
+         public async Task<string> AuthenticateAsync()
          {
-             TestClient.DefaultRequestHeaders.Authorization =
-                 new AuthenticationHeaderValue("Bearer", await GetJwtFromLoginComponentAsync());
-         }
-        
-         private async Task<string> GetJwtFromLoginComponentAsync()
-         {
-             HttpResponseMessage res;
-        
-             using (var client = new HttpClient())
+             var tokenResponseMessage = await TestClient.PostAsJsonAsync("api/v1/tokenRequest", new PasswordGrantTokenRequest()
              {
-                 var response = await client.PostAsJsonAsync(ApiRoutes.LoginComponentApi.Login, new
-                 {
-                     username = "integrationTestBroker@integration.com",
-                     password = "Test1234!"
-                 });
-                 res = response;
-             }
-        
-             var registrationResponse = await res.Content.ReadAsStringAsync();
-        
-             var deserializedJObj = (JObject) JsonConvert.DeserializeObject(registrationResponse);
-             var token = (JValue) deserializedJObj["token"];
-        
-             return token.Value<string>();
+                 ClientId = "broker_limits_rest_client_tests",
+                 Secret = "secret",
+                 Email = "brokeras@gmail.com",
+                 Password = "Password1234!"
+             });
+             var token = await tokenResponseMessage.Content.ReadAsStringAsync();
+
+             var deserializedJObj = (JObject) JsonConvert.DeserializeObject(token);
+             var tokenVal = (JValue) deserializedJObj["tokenValue"];
+
+             TestClient.DefaultRequestHeaders.Authorization =
+                 new AuthenticationHeaderValue("Bearer", tokenVal.Value<string>());
+             
+             return tokenVal.Value<string>();
          }
         
          /// <summary>

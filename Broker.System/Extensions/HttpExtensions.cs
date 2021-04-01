@@ -10,7 +10,7 @@ namespace Broker.System.Extensions
             if (httpContext.User == null) return string.Empty;
 
             return httpContext.User.Claims
-                .Where(x => x.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").FirstOrDefault().Value;
+                .Where(x => x.Type == "userId").FirstOrDefault().Value;
         }
     }
 }

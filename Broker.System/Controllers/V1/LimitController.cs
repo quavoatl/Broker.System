@@ -36,7 +36,6 @@ namespace Broker.System.Controllers.V1
         [HttpGet(ApiRoutes.Limit.GetAll)]
         public async Task<IActionResult> GetAll()
         {
-             var user = User.Identities.ToList();
              var limits = await _limitService.GetLimitsAsync(HttpContext.GetUserId());
 
              if (limits.Count == 0)  return NoContent();
