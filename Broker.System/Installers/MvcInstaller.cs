@@ -60,7 +60,7 @@ namespace Broker.System.Installers
 
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidateAudience = false
+                        ValidateAudience = true
                     };
                 })
                 .AddCookie("Cookies")
@@ -72,7 +72,7 @@ namespace Broker.System.Installers
                     config.SaveTokens = true;
                     config.ResponseType = "code";
                     config.GetClaimsFromUserInfoEndpoint = true;
-
+                    
                     config.Scope.Add(ClaimsHelpers.ROLES_KEY);
                     config.ClaimActions.MapUniqueJsonKey(ClaimsHelpers.ROLE, ClaimsHelpers.ROLE, ClaimsHelpers.ROLE);
                     config.TokenValidationParameters.RoleClaimType = ClaimsHelpers.ROLE;
