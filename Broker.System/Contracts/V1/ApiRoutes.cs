@@ -15,6 +15,11 @@
             public const string Create = Base + "/limit";
             public const string Delete = Base + "/limit/{limitId}";
         }
+        
+        public static class Cover
+        {
+            public const string GetAll = Base + "/covers";
+        }
 
         public static class LoginComponentApi
         {

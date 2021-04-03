@@ -74,6 +74,7 @@ namespace Broker.System.Installers
                     config.GetClaimsFromUserInfoEndpoint = true;
                     
                     config.Scope.Add(ClaimsHelpers.ROLES_KEY);
+                    config.Scope.Add("broker_limits_rest_api");
                     config.ClaimActions.MapUniqueJsonKey(ClaimsHelpers.ROLE, ClaimsHelpers.ROLE, ClaimsHelpers.ROLE);
                     config.TokenValidationParameters.RoleClaimType = ClaimsHelpers.ROLE;
                 });
@@ -95,6 +96,7 @@ namespace Broker.System.Installers
                             Scopes = new Dictionary<string, string>
                             {
                                 {"ApiOne", "Api One Resource - mare secret"},
+                                {"broker_limits_rest_api", "Limits Microservice"},
                             }
                         }
                     }

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using AutoMapper;
 using Broker.System.Contracts.V1;
@@ -25,12 +27,14 @@ namespace Broker.System.Controllers.V1
     public class LimitController : Controller
     {
         private readonly ILimitService _limitService;
+        private readonly IHttpClientFactory _clientFactory;
         private readonly IMapper _mapper;
 
-        public LimitController(ILimitService limitService, IMapper mapper)
+        public LimitController(ILimitService limitService, IMapper mapper, IHttpClientFactory clientFactory)
         {
             _limitService = limitService;
             _mapper = mapper;
+            _clientFactory = clientFactory;
         }
 
         [HttpGet(ApiRoutes.Limit.GetAll)]
@@ -46,11 +50,30 @@ namespace Broker.System.Controllers.V1
         [HttpPost(ApiRoutes.Limit.Create)]
         public async Task<IActionResult> Create([FromBody] CreateLimitRequest limitRequest)
         {
+            //mechanism to check if broker has that cover created
+            var coversClient = _clientFactory.CreateClient();
+            coversClient.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", await HttpContext.GetTokenAsync("access_token"));
+
+            var coversResponse = await coversClient.GetAsync("https://localhost:5045/api/v1/covers");
+            var coversContent = await coversResponse.Content.ReadFromJsonAsync<List<CoverResponse>>();
+
+            if (coversContent.Count == 0) return BadRequest(new {Message = "You don't have any cover!"});
+
+            int coverId = 0;
+            foreach (var c in coversContent)
+            {
+                if (c.Type.Equals(limitRequest.CoverType)) coverId = c.CoverId;
+            }
+
+            if (coverId.Equals(0))
+                return BadRequest(new {Message = $"You don't have a {limitRequest.CoverType} cover!"});
+
             Limit limit = new Limit()
             {
                 BrokerId = HttpContext.GetUserId(),
                 Value = limitRequest.Value,
-                CoverType = limitRequest.CoverType
+                CoverId = coverId
             };
 
             var createdLimit = await _limitService.CreateAsync(limit);
@@ -59,7 +82,10 @@ namespace Broker.System.Controllers.V1
             var locationUri = baseUrl + "/" +
                               ApiRoutes.Limit.Get.Replace("{limitId}", createdLimit.Entity.LimitId.ToString());
 
-            return Created(locationUri, _mapper.Map<LimitResponse>(limit));
+            var limitResponse = _mapper.Map<LimitResponse>(limit);
+            limitResponse.CoverType = limitRequest.CoverType;
+            
+            return Created(locationUri, limitResponse);
         }
 
         [HttpGet(ApiRoutes.Limit.Get)]
@@ -82,7 +108,6 @@ namespace Broker.System.Controllers.V1
             {
                 var limitFromDb = await _limitService.GetByIdAsync(limitId);
                 limitFromDb.Value = updateLimitRequest.Value;
-                limitFromDb.CoverType = updateLimitRequest.CoverType;
 
                 var updated = await _limitService.UpdateAsync(limitFromDb);
 
