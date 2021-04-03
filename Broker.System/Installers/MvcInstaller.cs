@@ -56,7 +56,7 @@ namespace Broker.System.Installers
                 .AddJwtBearer("Bearer", options =>
                 {
                     options.Authority = "https://localhost:5005";
-                    options.Audience = "broker_limits_rest_client";
+                    options.Audience = "broker_limits_rest_api";
 
                     options.TokenValidationParameters = new TokenValidationParameters
                     {

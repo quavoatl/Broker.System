@@ -36,11 +36,11 @@ namespace Broker.System.Controllers.V1
         [HttpGet(ApiRoutes.Limit.GetAll)]
         public async Task<IActionResult> GetAll()
         {
-             var limits = await _limitService.GetLimitsAsync(HttpContext.GetUserId());
+            var limits = await _limitService.GetLimitsAsync(HttpContext.GetUserId());
 
-             if (limits.Count == 0)  return NoContent();
-             
-             return Ok(_mapper.Map<List<LimitResponse>>(limits));
+            if (limits.Count == 0) return NoContent();
+
+            return Ok(_mapper.Map<List<LimitResponse>>(limits));
         }
 
         [HttpPost(ApiRoutes.Limit.Create)]
@@ -73,8 +73,8 @@ namespace Broker.System.Controllers.V1
 
         [HttpPut(ApiRoutes.Limit.Update)]
         public async Task<IActionResult> Update(
-                                                [FromRoute] int limitId,
-                                                [FromBody] UpdateLimitRequest updateLimitRequest)
+            [FromRoute] int limitId,
+            [FromBody] UpdateLimitRequest updateLimitRequest)
         {
             var userOwnsPost = await _limitService.UserOwnsLimit(limitId, HttpContext.GetUserId());
 
@@ -85,7 +85,7 @@ namespace Broker.System.Controllers.V1
                 limitFromDb.CoverType = updateLimitRequest.CoverType;
 
                 var updated = await _limitService.UpdateAsync(limitFromDb);
-                
+
                 if (updated) return Ok(_mapper.Map<LimitResponse>(limitFromDb));
             }
 
